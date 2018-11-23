@@ -15,6 +15,9 @@ type Block struct {
 	PreviousHash string // SHA256 identifier of previous record
 }
 
+// Blockchain is an ever-growing, source of truth array of Blocks
+var Blockchain []Block
+
 // GenerateBlock creates a new Block based on a previous Block in the Blockchain
 func GenerateBlock(old Block, BPM int) (Block, error) {
 	var new Block
@@ -37,4 +40,12 @@ func CalculateBlockHash(b Block) string {
 	hash.Write([]byte(record))
 	hashed := hash.Sum(nil)
 	return hex.EncodeToString(hashed)
+}
+
+// UpdateBlockchain updates the current Blockchain with a potentially newer Blockchain
+// if the candidate Blockchain has a longer chain length
+func UpdateBlockchain(potential []Block) {
+	if len(potential) > len(Blockchain) {
+		Blockchain = potential
+	}
 }
